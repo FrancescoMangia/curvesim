@@ -290,5 +290,5 @@ pool_type_to_amm: Dict[str, Optional[str]] = {
     "stableswapng": "stableswap",
     "twocryptong": "cryptoswap",
 }
-pool_snapshot_sync = sync(pool_snapshot)  # TODO export?
+pool_snapshot_sync = sync(pool_snapshot)
 get_pool_pair_volume_sync = sync(get_pool_pair_volume)
