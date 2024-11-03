@@ -97,5 +97,16 @@ def get_metadata(
 
     metadata_dict = from_address(address, chain, env=env, end_ts=end_ts)
     metadata = PoolMetaData(metadata_dict)
-
+    metadata = _validate_metadata(metadata)
     return metadata
+
+
+def _validate_metadata(pool_metadata):
+    coins_address = [
+        "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" if coin == "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" else coin
+        for coin in pool_metadata.coins
+    ]
+    coin_names = ["WETH" if name == "0xeeee" else name for name in pool_metadata.coin_names]
+    pool_metadata._dict["coins"]["addresses"] = coins_address
+    pool_metadata._dict["coins"]["names"] = coin_names
+    return pool_metadata
