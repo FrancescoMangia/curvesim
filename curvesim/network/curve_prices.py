@@ -49,6 +49,8 @@ async def _get_pool_pair_volume(
         "end": end_ts,
         "interval": interval,
     }
+    print(url)
+    print(params)
     r = await HTTP.get(url, params=params)
 
     data: List[Dict] = r["data"]
