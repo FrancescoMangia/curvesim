@@ -16,6 +16,7 @@ from curvesim.logging import get_logger
 from curvesim.pipelines.vol_limited_arb import pipeline as volume_limited_arbitrage
 from curvesim.pool_data import get_metadata
 from curvesim.utils import get_pairs
+import ast
 
 logger = get_logger(__name__)
 
@@ -144,6 +145,50 @@ def autosim(
     p_var, p_fixed, kwargs = _parse_arguments(pool_metadata, **kwargs)
 
     pool_metadata = _validate_metadata(pool_metadata)
+
+    data_dict = {
+        "name": "Curve.fi USD-BTC-ETH",
+        "address": "0xD51a44d3FaE010294C616388b506AcdA1bfAAE46",
+        "chain": "mainnet",
+        "symbol": "crv3crypto",
+        "version": 2,
+        "pool_type": "REGISTRY_V1",
+        "params": {
+            "A": 1707629,
+            "gamma": 11809167828997,
+            "fee_gamma": 500000000000000,
+            "mid_fee": 3000000,
+            "out_fee": 30000000,
+            "allowed_extra_profit": 2000000000000,
+            "adjustment_step": 490000000000000,
+            "ma_half_time": 600,
+            "price_scale": [76002010038407134010504, 2909625618132942747729],
+            "price_oracle": [80921200993062082731580, 3182323404869082355710],
+            "last_prices": [80214347479074717073802, 3190112773474435686629],
+            "last_prices_timestamp": 1731196463,
+            "admin_fee": 5000000000,
+            "xcp_profit": 1 * 10**18,
+            "xcp_profit_a": 1 * 10**18,
+        },
+        "coins": {
+            "names": ["XAUT", "TBTC", "WETH"],
+            "addresses": [
+                "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+                "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+                "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            ],
+            "decimals": [6, 8, 18],
+        },
+        "reserves": {
+            "by_coin": [6355775456454000000000000, 83039680600000000000, 2022710683578992405576],
+            "unnormalized_by_coin": [6355775456454, 8303968060, 2022710683578992405576],
+            "virtual_price": 1 * 10**18,
+        },
+        "basepool": None,
+        "timestamp": 1731196800,
+    }
+    data_string = str(data_dict)
+    pool_metadata._dict = ast.literal_eval(data_string)
 
     results = volume_limited_arbitrage(
         pool_metadata,
