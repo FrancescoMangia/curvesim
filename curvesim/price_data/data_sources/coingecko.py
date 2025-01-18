@@ -45,22 +45,6 @@ class CoinGeckoPriceVolumeSource(ApiDataSource):
         pandas.DataFrame
         """
 
-        # # test
-        # new_sim_assets = []
-        # for asset in sim_asset:
-        #     id = asset.id if asset.id != "0xeeee" else "ETH"
-        #     address = (
-        #         asset.address
-        #         if asset.address != "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
-        #         else "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-        #     )
-        #     asset = OnChainAsset(id, id, address, asset.chain)
-        #     new_sim_assets.append(asset)
-
-        # new_sim_assets = OnChainAssetPair(new_sim_assets[0], new_sim_assets[1])
-        # sim_asset = new_sim_assets
-        # # test
-
         symbol_pair = (sim_asset.base.symbol, sim_asset.quote.symbol)
 
         logger.info("Fetching CoinGecko price data for %s...", "-".join(symbol_pair))
