@@ -169,6 +169,8 @@ async def _pool_snapshot(address, chain, env, end_ts=None):
         end_date = datetime.now(timezone.utc)
         end_ts = int(end_date.timestamp())
 
+    print(f"end_ts: {end_ts}")
+
     q = """
         {
           dailyPoolSnapshots(
@@ -229,6 +231,7 @@ async def _pool_snapshot(address, chain, env, end_ts=None):
         r = r["dailyPoolSnapshots"][0]
     except IndexError as e:
         raise SubgraphResultError(f"No daily snapshot for this pool: {address}, {chain}") from e
+    
 
     return r
 

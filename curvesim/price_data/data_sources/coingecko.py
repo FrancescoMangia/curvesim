@@ -63,7 +63,8 @@ class CoinGeckoPriceVolumeSource(ApiDataSource):
         # sum volumes and convert to base: usd / (usd/base) = base
         base_data, quote_data = data
         prices = base_data["price"] / quote_data["price"]
-        volumes = (base_data["volume"] + quote_data["volume"]) / base_data["price"]
+        # prices = 1 + (prices - 1) / 2
+        # volumes = (base_data["volume"] + quote_data["volume"]) / base_data["price"]
 
         df = concat(
             [prices, volumes],

@@ -1,6 +1,7 @@
 """
 Mainly a module to house the `Pool`, a basic stableswap implementation in Python.
 """
+
 from math import prod
 from typing import Type
 
@@ -31,6 +32,7 @@ class CurvePool(Pool):  # pylint: disable=too-many-instance-attributes
         "r",
         "n_total",
         "admin_balances",
+        "out_fee",
     )
 
     def __init__(  # pylint: disable=too-many-arguments
@@ -42,6 +44,7 @@ class CurvePool(Pool):  # pylint: disable=too-many-instance-attributes
         tokens=None,
         fee=4 * 10**6,
         fee_mul=None,
+        out_fee=None,
         admin_fee=5 * 10**9,
         virtual_price=None,
     ):
@@ -74,6 +77,7 @@ class CurvePool(Pool):  # pylint: disable=too-many-instance-attributes
         self.n = n
         self.fee = fee
         self.rates = rates
+        self.out_fee = out_fee
 
         if isinstance(D, list):
             self.balances = D.copy()
@@ -81,9 +85,7 @@ class CurvePool(Pool):  # pylint: disable=too-many-instance-attributes
             self.balances = self._convert_D_to_balances(D)
 
         if tokens and virtual_price:
-            raise CurvesimValueError(
-                "Should not set both `tokens` and `virtual_price`."
-            )
+            raise CurvesimValueError("Should not set both `tokens` and `virtual_price`.")
 
         # By now, should have set everything needed for D.
         D = self.D()
@@ -448,9 +450,7 @@ class CurvePool(Pool):  # pylint: disable=too-many-instance-attributes
         balances = self.balances
         afee = self.admin_fee
         admin_fees = [f * afee // 10**10 for f in fees]
-        new_balances = [
-            bal + amt - fee for bal, amt, fee in zip(balances, amounts, admin_fees)
-        ]
+        new_balances = [bal + amt - fee for bal, amt, fee in zip(balances, amounts, admin_fees)]
         self.balances = new_balances
         self.admin_balances = [t + a for t, a in zip(self.admin_balances, admin_fees)]
 
@@ -636,9 +636,7 @@ class CurvePool(Pool):  # pylint: disable=too-many-instance-attributes
     def dynamic_fee(self, xpi, xpj):
         xps2 = xpi + xpj
         xps2 *= xps2  # Doing just ** 2 can overflow apparently
-        return (self.fee_mul * self.fee) // (
-            (self.fee_mul - 10**10) * 4 * xpi * xpj // xps2 + 10**10
-        )
+        return (self.fee_mul * self.fee) // ((self.fee_mul - 10**10) * 4 * xpi * xpj // xps2 + 10**10)
 
     def dydxfee(self, i, j):
         """
@@ -706,9 +704,7 @@ class CurvePool(Pool):  # pylint: disable=too-many-instance-attributes
         D_pow = mpz(D) ** (n + 1)
         x_prod = prod(xp)
         A_pow = A * n ** (n + 1)
-        dydx = (xj * (xi * A_pow * x_prod + D_pow)) / (
-            xi * (xj * A_pow * x_prod + D_pow)
-        )
+        dydx = (xj * (xi * A_pow * x_prod + D_pow)) / (xi * (xj * A_pow * x_prod + D_pow))
 
         if use_fee:
             if self.fee_mul is None:

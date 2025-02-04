@@ -25,6 +25,7 @@ class StableswapMetaData(PoolMetaDataBase):
                 "fee": data["params"]["fee"],
                 "fee_mul": data["params"]["fee_mul"],
                 "admin_fee": data["params"]["admin_fee"],
+                "out_fee": data["params"]["out_fee"] if "out_fee" in data["params"] else 0,
                 "virtual_price": virtual_price,
             }
 
